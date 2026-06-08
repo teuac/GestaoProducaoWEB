@@ -26,10 +26,12 @@ import {
   ReceiptLong as ReportIcon,
   Logout as LogoutIcon,
   AccountCircle,
-  ManageAccounts as UsersIcon
+  ManageAccounts as UsersIcon,
+  AccountTree as CostCenterIcon
 } from '@mui/icons-material';
 import logoAzul from '../../assets/logoazul.png';
 import UsuariosPage from '../Usuarios/UsuariosPage';
+import CentroDeCustoPage from '../CentroDeCusto/CentroDeCustoPage';
 
 const drawerWidth = 280;
 
@@ -117,12 +119,15 @@ const DashboardPage = () => {
     { id: 'locais', text: 'Locais de Serviço', icon: <PlaceIcon /> },
     { id: 'relatorios', text: 'Relatórios', icon: <ReportIcon /> },
     { id: 'usuarios', text: 'Usuários', icon: <UsersIcon /> },
+    { id: 'centros-custo', text: 'Centros de Custo', icon: <CostCenterIcon /> },
   ];
 
   const renderContent = () => {
     switch (selectedItem) {
       case 'usuarios':
         return <UsuariosPage />;
+      case 'centros-custo':
+        return <CentroDeCustoPage />;
       case 'dashboard':
       default:
         return (
