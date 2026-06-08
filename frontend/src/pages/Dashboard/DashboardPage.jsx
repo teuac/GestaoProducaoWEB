@@ -117,7 +117,7 @@ const DashboardPage = () => {
     { id: 'dashboard', text: 'Dashboard', icon: <DashboardIcon /> },
     { id: 'producao', text: 'Produção', icon: <AssignmentIcon /> },
     { id: 'colaboradores', text: 'Colaboradores', icon: <PeopleIcon /> },
-    { id: 'unidades', text: 'Unidades', icon: <BusinessIcon /> },
+    { id: 'unidades', text: 'Unidades de Medida', icon: <UnitIcon /> },
     { id: 'locais', text: 'Locais de Serviço', icon: <PlaceIcon /> },
     { id: 'relatorios', text: 'Relatórios', icon: <ReportIcon /> },
     { id: 'usuarios', text: 'Usuários', icon: <UsersIcon /> },
