@@ -25,6 +25,7 @@ public class Usuario {
 
     private String googleId; // Preenchido se logar via Google
 
+    @Column(columnDefinition = "TEXT")
     private String profilePicture;
 
     @ElementCollection(fetch = FetchType.EAGER)
