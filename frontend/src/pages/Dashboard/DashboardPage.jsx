@@ -43,6 +43,12 @@ const StyledAppBar = styled(AppBar)`
   box-shadow: none !important;
   border-bottom: 1px solid #e0e0e0;
   z-index: 1201 !important;
+
+  .header-logo {
+    height: 48px; /* Aumentado de 32px para 48px */
+    margin-right: 16px;
+    object-fit: contain;
+  }
 `;
 
 const StyledDrawer = styled(Drawer)`
@@ -123,6 +129,7 @@ const DashboardPage = () => {
             >
               <MenuIcon />
             </IconButton>
+            <img src={logoAzul} alt="Logo" className="header-logo" />
             <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
               {menuItems.find(item => item.id === selectedItem)?.text}
             </Typography>
