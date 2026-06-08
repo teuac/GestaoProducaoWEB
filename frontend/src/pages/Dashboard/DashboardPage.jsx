@@ -34,6 +34,7 @@ import logoAzul from '../../assets/logoazul.png';
 import UsuariosPage from '../Usuarios/UsuariosPage';
 import CentroDeCustoPage from '../CentroDeCusto/CentroDeCustoPage';
 import UnidadesPage from '../Unidades/UnidadesPage';
+import LocaisServicoPage from '../LocaisServico/LocaisServicoPage';
 
 const drawerWidth = 280;
 
@@ -132,6 +133,8 @@ const DashboardPage = () => {
         return <CentroDeCustoPage />;
       case 'unidades':
         return <UnidadesPage />;
+      case 'locais':
+        return <LocaisServicoPage />;
       case 'dashboard':
       default:
         return (

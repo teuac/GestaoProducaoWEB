@@ -29,4 +29,11 @@ export const createUnidade = (unidade) => api.post('/unidades', unidade);
 export const updateUnidade = (id, unidade) => api.put(`/unidades/${id}`, unidade);
 export const deleteUnidade = (id) => api.delete(`/unidades/${id}`);
 
+// Locais de Serviço
+export const getLocaisServico = () => api.get('/locais-servico');
+export const getLocalServicoById = (id) => api.get(`/locais-servico/${id}`);
+export const createLocalServico = (local) => api.post('/locais-servico', local);
+export const updateLocalServico = (id, local) => api.put(`/locais-servico/${id}`, local);
+export const deleteLocalServico = (id) => api.delete(`/locais-servico/${id}`);
+
 export default api;
