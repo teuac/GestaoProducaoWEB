@@ -499,8 +499,19 @@ const DashboardPage = () => {
   };
 
   // Estados de Filtros do Dashboard
-  const [filterStartDate, setFilterStartDate] = useState('');
-  const [filterEndDate, setFilterEndDate] = useState('');
+  const [filterStartDate, setFilterStartDate] = useState(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}-01`;
+  });
+  const [filterEndDate, setFilterEndDate] = useState(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
   const [filterColaboradorId, setFilterColaboradorId] = useState('all');
   const [filterAcordoId, setFilterAcordoId] = useState('all');
 
