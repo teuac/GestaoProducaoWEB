@@ -227,7 +227,7 @@ const ServicosPage = () => {
                     onChange={(e) => setFormData({ ...formData, nomeServico: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="Valor Unitário"
                     type="number"
@@ -238,7 +238,7 @@ const ServicosPage = () => {
                     onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     select
                     label="Unidade de Medida"

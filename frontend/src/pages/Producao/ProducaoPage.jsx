@@ -302,7 +302,7 @@ const ProducaoPage = ({ selectedObraId = 'all', onProducoesChanged }) => {
           <DialogContent>
             <Box sx={{ mt: 2 }}>
               <Grid container spacing={2.5}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="Data da Produção"
                     type="date"
@@ -313,7 +313,7 @@ const ProducaoPage = ({ selectedObraId = 'all', onProducoesChanged }) => {
                     onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="Quantidade"
                     type="number"
@@ -387,7 +387,7 @@ const ProducaoPage = ({ selectedObraId = 'all', onProducoesChanged }) => {
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     select
                     label="Local de Serviço"
@@ -404,7 +404,7 @@ const ProducaoPage = ({ selectedObraId = 'all', onProducoesChanged }) => {
                   </TextField>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     select
                     label="Centro de Custo"

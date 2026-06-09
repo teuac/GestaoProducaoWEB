@@ -341,7 +341,7 @@ const ColaboradoresPage = () => {
                     onChange={(e) => setFormData({ ...formData, nomeCompleto: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="Função"
                     fullWidth
@@ -350,7 +350,7 @@ const ColaboradoresPage = () => {
                     onChange={(e) => setFormData({ ...formData, funcao: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="CPF"
                     fullWidth
@@ -367,7 +367,7 @@ const ColaboradoresPage = () => {
                 Dados Bancários (Caixa Econômica)
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12}>
                   <TextField
                     label="Agência"
                     fullWidth
@@ -376,7 +376,7 @@ const ColaboradoresPage = () => {
                     onChange={(e) => setFormData({ ...formData, agencia: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12}>
                   <TextField
                     label="Operação"
                     fullWidth
@@ -385,7 +385,7 @@ const ColaboradoresPage = () => {
                     onChange={(e) => setFormData({ ...formData, operacao: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12}>
                   <TextField
                     label="Conta"
                     fullWidth
