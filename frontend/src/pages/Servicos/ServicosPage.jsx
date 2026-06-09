@@ -209,7 +209,7 @@ const ServicosPage = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
         <form onSubmit={handleSubmit}>
           <DialogTitle sx={{ fontWeight: 700, color: '#103795', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ServiceIcon />
