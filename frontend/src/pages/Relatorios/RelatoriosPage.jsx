@@ -377,8 +377,13 @@ const RelatoriosPage = ({ selectedObraId }) => {
         contentHtml += `
           <div class="colab-section">
             <div class="colab-header">
-              <span>Colaborador: ${c.nomeCompleto} - ${c.funcao}</span>
-              <span>CPF: ${c.cpf}</span>
+              <div>
+                <div style="font-weight: 600;">Colaborador: ${c.nomeCompleto} - ${c.funcao}</div>
+                <div style="font-size: 9px; font-weight: normal; margin-top: 2px; opacity: 0.9;">CPF: ${c.cpf}</div>
+              </div>
+              <div style="font-size: 10px; font-weight: 500; align-self: center;">
+                Dados Bancários: Ag: ${c.agencia || '-'} / Op: ${c.operacao || '-'} / Conta: ${c.numeroConta || '-'}
+              </div>
             </div>
             <table class="data-table">
               <thead>
@@ -582,9 +587,17 @@ const RelatoriosPage = ({ selectedObraId }) => {
                 <Card key={c.id} sx={{ mb: 4, borderRadius: 3, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
                   <CardHeader
                     title={`${c.nomeCompleto} - ${c.funcao}`}
-                    subheader={`CPF: ${c.cpf}`}
+                    subheader={
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: 1 }}>
+                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                          CPF: {c.cpf}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>
+                          Dados Bancários: Ag: {c.agencia || '-'} / Op: {c.operacao || '-'} / Conta: {c.numeroConta || '-'}
+                        </Typography>
+                      </Box>
+                    }
                     titleTypographyProps={{ variant: 'subtitle1', sx: { fontWeight: 700, color: '#ffffff' } }}
-                    subheaderTypographyProps={{ variant: 'caption', sx: { color: 'rgba(255,255,255,0.8)' } }}
                     sx={{ bgcolor: '#103795', py: 1.5, px: 3 }}
                   />
                   <CardContent sx={{ p: 0 }}>

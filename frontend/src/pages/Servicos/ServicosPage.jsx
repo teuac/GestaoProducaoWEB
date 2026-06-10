@@ -209,63 +209,62 @@ const ServicosPage = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        PaperProps={{
+          sx: {
+            width: '450px',
+            maxWidth: '95vw',
+          }
+        }}
+      >
         <form onSubmit={handleSubmit}>
           <DialogTitle sx={{ fontWeight: 700, color: '#103795', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ServiceIcon />
             {selectedAcordo ? 'Editar Serviço' : 'Novo Serviço'}
           </DialogTitle>
           <DialogContent>
-            <Box sx={{ mt: 1 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Nome do Serviço"
-                    fullWidth
-                    required
-                    value={formData.nomeServico}
-                    onChange={(e) => setFormData({ ...formData, nomeServico: e.target.value })}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1.5, minHeight: '280px' }}>
+              <TextField
+                label="Nome do Serviço"
+                fullWidth
+                required
+                value={formData.nomeServico}
+                onChange={(e) => setFormData({ ...formData, nomeServico: e.target.value })}
+              />
+              <TextField
+                label="Valor Unitário"
+                type="number"
+                fullWidth
+                required
+                inputProps={{ step: "0.01" }}
+                value={formData.valor}
+                onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+              />
+              <TextField
+                select
+                label="Unidade de Medida"
+                fullWidth
+                required
+                value={formData.unidade.id}
+                onChange={(e) => setFormData({ ...formData, unidade: { id: e.target.value } })}
+              >
+                {unidades.map((u) => (
+                  <MenuItem key={u.id} value={u.id}>
+                    {u.nome} ({u.abreviacao})
+                  </MenuItem>
+                ))}
+              </TextField>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formData.permitirEquipe}
+                    onChange={(e) => setFormData({ ...formData, permitirEquipe: e.target.checked })}
                   />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Valor Unitário"
-                    type="number"
-                    fullWidth
-                    required
-                    inputProps={{ step: "0.01" }}
-                    value={formData.valor}
-                    onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Unidade de Medida"
-                    fullWidth
-                    required
-                    value={formData.unidade.id}
-                    onChange={(e) => setFormData({ ...formData, unidade: { id: e.target.value } })}
-                  >
-                    {unidades.map((u) => (
-                      <MenuItem key={u.id} value={u.id}>
-                        {u.nome} ({u.abreviacao})
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formData.permitirEquipe}
-                        onChange={(e) => setFormData({ ...formData, permitirEquipe: e.target.checked })}
-                      />
-                    }
-                    label="Permitir divisão em equipe?"
-                  />
-                </Grid>
-              </Grid>
+                }
+                label="Permitir divisão em equipe?"
+              />
             </Box>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>

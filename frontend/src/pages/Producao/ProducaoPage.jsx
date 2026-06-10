@@ -292,136 +292,128 @@ const ProducaoPage = ({ selectedObraId = 'all', onProducoesChanged }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+      <Dialog 
+        open={open} 
+        onClose={handleClose} 
+        PaperProps={{
+          sx: {
+            width: '450px',
+            maxWidth: '95vw',
+          }
+        }}
+      >
         <form onSubmit={handleSubmit}>
           <DialogTitle sx={{ fontWeight: 700, color: '#103795', display: 'flex', alignItems: 'center', gap: 1 }}>
             <ProductionIcon />
             Lançar Nova Produção
           </DialogTitle>
           <DialogContent>
-            <Box sx={{ mt: 2 }}>
-              <Grid container spacing={2.5}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Data da Produção"
-                    type="date"
-                    fullWidth
-                    required
-                    slotProps={{ inputLabel: { shrink: true } }}
-                    value={formData.data}
-                    onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Quantidade"
-                    type="number"
-                    fullWidth
-                    required
-                    inputProps={{ min: "1" }}
-                    value={formData.quantidade}
-                    onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })}
-                  />
-                </Grid>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 2, minHeight: '480px' }}>
+              <TextField
+                label="Data da Produção"
+                type="date"
+                fullWidth
+                required
+                slotProps={{ inputLabel: { shrink: true } }}
+                value={formData.data}
+                onChange={(e) => setFormData({ ...formData, data: e.target.value })}
+              />
+              <TextField
+                label="Quantidade"
+                type="number"
+                fullWidth
+                required
+                inputProps={{ min: "1" }}
+                value={formData.quantidade}
+                onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })}
+              />
 
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Serviço (Acordo)"
-                    fullWidth
-                    required
-                    value={formData.acordoId}
-                    onChange={handleAcordoChange}
-                  >
-                    {acordos.map((a) => (
-                      <MenuItem key={a.id} value={a.id}>
-                        {a.nomeServico} ({formatCurrency(a.valor)}) {!a.permitirEquipe && " - Individual"}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
+              <TextField
+                select
+                label="Serviço (Acordo)"
+                fullWidth
+                required
+                value={formData.acordoId}
+                onChange={handleAcordoChange}
+              >
+                {acordos.map((a) => (
+                  <MenuItem key={a.id} value={a.id}>
+                    {a.nomeServico} ({formatCurrency(a.valor)}) {!a.permitirEquipe && " - Individual"}
+                  </MenuItem>
+                ))}
+              </TextField>
 
-                <Grid item xs={12}>
-                  <FormControl fullWidth required>
-                    <InputLabel id="colab-label">Colaboradores</InputLabel>
-                    <Select
-                      labelId="colab-label"
-                      multiple
-                      required
-                      disabled={!formData.acordoId}
-                      value={formData.colaboradoresIds}
-                      onChange={handleColaboradoresChange}
-                      input={<OutlinedInput label="Colaboradores" />}
-                      renderValue={(selected) => {
-                        if (!selected || selected.length === 0) {
-                          return null;
-                        }
-                        return (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((val) => {
-                              const c = colaboradores.find(col => col.id === val);
-                              return <Chip key={val} label={c ? c.nomeCompleto : val} size="small" />;
-                            })}
-                          </Box>
-                        );
-                      }}
-                    >
-                      {colaboradores.map((c) => (
-                        <MenuItem key={c.id} value={c.id}>
-                          <Checkbox checked={formData.colaboradoresIds.indexOf(c.id) > -1} />
-                          <ListItemText primary={c.nomeCompleto} secondary={c.funcao} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!formData.acordoId && (
-                      <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, ml: 1 }}>
-                        Selecione um serviço primeiro para habilitar a escolha de colaboradores.
-                      </Typography>
-                    )}
-                    {selectedAcordo && !selectedAcordo.permitirEquipe && (
-                      <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, ml: 1, fontWeight: 500 }}>
-                        Este serviço é individual. Apenas 1 colaborador pode ser selecionado.
-                      </Typography>
-                    )}
-                  </FormControl>
-                </Grid>
+              <FormControl fullWidth required>
+                <InputLabel id="colab-label">Colaboradores</InputLabel>
+                <Select
+                  labelId="colab-label"
+                  multiple
+                  required
+                  disabled={!formData.acordoId}
+                  value={formData.colaboradoresIds}
+                  onChange={handleColaboradoresChange}
+                  input={<OutlinedInput label="Colaboradores" />}
+                  renderValue={(selected) => {
+                    if (!selected || selected.length === 0) {
+                      return "\u00A0";
+                    }
+                    return selected
+                      .map((val) => {
+                        const c = colaboradores.find((col) => col.id === val);
+                        return c ? c.nomeCompleto : val;
+                      })
+                      .join(', ');
+                  }}
+                >
+                  {colaboradores.map((c) => (
+                    <MenuItem key={c.id} value={c.id}>
+                      <Checkbox checked={formData.colaboradoresIds.indexOf(c.id) > -1} />
+                      <ListItemText primary={c.nomeCompleto} secondary={c.funcao} />
+                    </MenuItem>
+                  ))}
+                </Select>
+                {!formData.acordoId && (
+                  <Typography variant="caption" color="textSecondary" sx={{ mt: 0.5, ml: 1 }}>
+                    Selecione um serviço primeiro para habilitar a escolha de colaboradores.
+                  </Typography>
+                )}
+                {selectedAcordo && !selectedAcordo.permitirEquipe && (
+                  <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, ml: 1, fontWeight: 500 }}>
+                    Este serviço é individual. Apenas 1 colaborador pode ser selecionado.
+                  </Typography>
+                )}
+              </FormControl>
 
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Local de Serviço"
-                    fullWidth
-                    required
-                    value={formData.localServicoId}
-                    onChange={(e) => setFormData({ ...formData, localServicoId: e.target.value })}
-                  >
-                    {locais.map((l) => (
-                      <MenuItem key={l.id} value={l.id}>
-                        {l.nomeLocal} ({l.tipoLocal})
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
+              <TextField
+                select
+                label="Local de Serviço"
+                fullWidth
+                required
+                value={formData.localServicoId}
+                onChange={(e) => setFormData({ ...formData, localServicoId: e.target.value })}
+              >
+                {locais.map((l) => (
+                  <MenuItem key={l.id} value={l.id}>
+                    {l.nomeLocal} ({l.tipoLocal})
+                  </MenuItem>
+                ))}
+              </TextField>
 
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Centro de Custo"
-                    fullWidth
-                    required
-                    disabled={selectedObraId !== 'all'}
-                    value={formData.centroCustoId}
-                    onChange={(e) => setFormData({ ...formData, centroCustoId: e.target.value })}
-                  >
-                    {centros.map((cc) => (
-                      <MenuItem key={cc.id} value={cc.id}>
-                        {cc.id} - {cc.nome}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-              </Grid>
+              <TextField
+                select
+                label="Centro de Custo"
+                fullWidth
+                required
+                disabled={selectedObraId !== 'all'}
+                value={formData.centroCustoId}
+                onChange={(e) => setFormData({ ...formData, centroCustoId: e.target.value })}
+              >
+                {centros.map((cc) => (
+                  <MenuItem key={cc.id} value={cc.id}>
+                    {cc.id} - {cc.nome}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
           </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>

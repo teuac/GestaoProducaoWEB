@@ -30,8 +30,31 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // Salva ou atualiza o usuário no banco de dados assim que o login é bem sucedido
         usuarioService.processOAuthPostLogin(email, nome, googleId, picture);
 
-        // Redireciona de volta para o IP/host de onde veio a requisição para a porta 5173 do frontend
+        // Determina a URL de redirecionamento final para o frontend usando os dados do request
+        // (que conterão as informações de proxy/Ngrok graças ao forward-headers-strategy)
+        String scheme = request.getScheme();
         String serverName = request.getServerName();
-        response.sendRedirect("http://" + serverName + ":5173/dashboard");
+        int port = request.getServerPort();
+
+        // Se a requisição veio direto na porta do backend (8080), redirecionamos para o dev server do Vite (5173)
+        if (port == 8080) {
+            port = 5173;
+        }
+
+        // Caso de segurança: evita redirecionar de volta para o domínio do Google
+        if (serverName != null && serverName.contains("google.com")) {
+            serverName = "localhost";
+            port = 5173;
+            scheme = "http";
+        }
+
+        String redirectUrl;
+        if (port == 80 || port == 443 || port <= 0) {
+            redirectUrl = scheme + "://" + serverName + "/dashboard";
+        } else {
+            redirectUrl = scheme + "://" + serverName + ":" + port + "/dashboard";
+        }
+
+        response.sendRedirect(redirectUrl);
     }
 }
