@@ -3,6 +3,8 @@ package com.acengenhariase.tech.gestaoproducao.service;
 import com.acengenhariase.tech.gestaoproducao.dto.ColaboradorDTO;
 import com.acengenhariase.tech.gestaoproducao.model.Colaborador;
 import com.acengenhariase.tech.gestaoproducao.repository.ColaboradorRepository;
+import com.acengenhariase.tech.gestaoproducao.repository.ProducaoRepository;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ public class ColaboradorService {
 
     @Autowired
     private ColaboradorRepository repository;
+
+    @Autowired
+    private ProducaoRepository producaoRepository;
 
     @Transactional(readOnly = true)
     public List<ColaboradorDTO> listarTodos() {
@@ -62,6 +67,7 @@ public class ColaboradorService {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Não é possível deletar. Colaborador não encontrado com o ID: " + id);
         }
+        producaoRepository.deleteAssociationsByColaboradorId(id);
         repository.deleteById(id);
     }
 

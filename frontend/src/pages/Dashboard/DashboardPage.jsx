@@ -482,9 +482,14 @@ const DashboardPage = () => {
     const fetchUser = async () => {
       try {
         const userRes = await getMe();
+        if (typeof userRes.data === 'string' && userRes.data.includes('<!DOCTYPE html>')) {
+          window.location.href = '/login';
+          return;
+        }
         setCurrentUser(userRes.data);
       } catch (error) {
         console.error('Erro ao obter usuário atual:', error);
+        window.location.href = '/login';
       }
     };
     fetchUser();
@@ -520,30 +525,50 @@ const DashboardPage = () => {
     const fetchDashboardData = async () => {
       try {
         const obrasRes = await getCentrosDeCusto();
-        setObras(obrasRes.data);
+        if (Array.isArray(obrasRes.data)) {
+          setObras(obrasRes.data);
+        } else {
+          setObras([]);
+        }
       } catch (error) {
         console.error('Erro ao carregar obras no dashboard:', error);
+        setObras([]);
       }
 
       try {
         const prodRes = await getProducoes();
-        setProducoes(prodRes.data);
+        if (Array.isArray(prodRes.data)) {
+          setProducoes(prodRes.data);
+        } else {
+          setProducoes([]);
+        }
       } catch (error) {
         console.error('Erro ao carregar produções no dashboard:', error);
+        setProducoes([]);
       }
 
       try {
         const colabsRes = await getColaboradores();
-        setColaboradores(colabsRes.data);
+        if (Array.isArray(colabsRes.data)) {
+          setColaboradores(colabsRes.data);
+        } else {
+          setColaboradores([]);
+        }
       } catch (error) {
         console.error('Erro ao carregar colaboradores no dashboard:', error);
+        setColaboradores([]);
       }
 
       try {
         const acordosRes = await getAcordos();
-        setAcordos(acordosRes.data);
+        if (Array.isArray(acordosRes.data)) {
+          setAcordos(acordosRes.data);
+        } else {
+          setAcordos([]);
+        }
       } catch (error) {
         console.error('Erro ao carregar acordos no dashboard:', error);
+        setAcordos([]);
       }
     };
     fetchDashboardData();
@@ -757,7 +782,7 @@ const DashboardPage = () => {
                 Filtros do Dashboard
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={3}>
+                <Grid item="true" xs={12} sm={3}>
                   <TextField
                     label="Data Inicial"
                     type="date"
@@ -767,7 +792,7 @@ const DashboardPage = () => {
                     onChange={(e) => setFilterStartDate(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Grid item="true" xs={12} sm={3}>
                   <TextField
                     label="Data Final"
                     type="date"
@@ -777,7 +802,7 @@ const DashboardPage = () => {
                     onChange={(e) => setFilterEndDate(e.target.value)}
                   />
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Grid item="true" xs={12} sm={3}>
                   <TextField
                     select
                     label="Colaborador"
@@ -793,7 +818,7 @@ const DashboardPage = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Grid item="true" xs={12} sm={3}>
                   <TextField
                     select
                     label="Serviço (Acordo)"
