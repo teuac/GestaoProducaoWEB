@@ -29,4 +29,7 @@ public class ColaboradorDTO {
 
     @NotBlank(message = "O número da conta é obrigatório")
     private String numeroConta;
+
+    private Integer centroDeCustoId;
+    private String centroDeCustoNome;
 }

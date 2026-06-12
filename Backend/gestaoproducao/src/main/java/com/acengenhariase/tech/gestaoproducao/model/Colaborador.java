@@ -29,6 +29,10 @@ public class Colaborador {
     @Column(nullable = false, unique = true)
     private String cpf;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "centro_de_custo_id", nullable = true)
+    private CentroDeCusto centroDeCusto;
+
     @NotBlank(message = "A agência é obrigatória")
     @Column(nullable = false)
     private String agencia;

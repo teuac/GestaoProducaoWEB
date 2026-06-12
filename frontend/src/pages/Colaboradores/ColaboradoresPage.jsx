@@ -39,10 +39,11 @@ import {
   CloudUpload as CloudUploadIcon,
   Help as HelpIcon
 } from '@mui/icons-material';
-import { getColaboradores, createColaborador, updateColaborador, deleteColaborador } from '../../services/api';
+import { getColaboradores, createColaborador, updateColaborador, deleteColaborador, getCentrosDeCusto } from '../../services/api';
 
 const ColaboradoresPage = () => {
   const [colaboradores, setColaboradores] = useState([]);
+  const [centrosDeCusto, setCentrosDeCusto] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedColaborador, setSelectedColaborador] = useState(null);
   const [openImport, setOpenImport] = useState(false);
@@ -57,13 +58,24 @@ const ColaboradoresPage = () => {
     cpf: '',
     agencia: '',
     operacao: '',
-    numeroConta: ''
+    numeroConta: '',
+    centroDeCustoId: ''
   });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     fetchColaboradores();
+    fetchCentrosDeCusto();
   }, []);
+
+  const fetchCentrosDeCusto = async () => {
+    try {
+      const response = await getCentrosDeCusto();
+      setCentrosDeCusto(response.data);
+    } catch (error) {
+      showSnackbar('Erro ao carregar centros de custo', 'error');
+    }
+  };
 
   const fetchColaboradores = async () => {
     try {
@@ -87,7 +99,8 @@ const ColaboradoresPage = () => {
         cpf: colaborador.cpf || '',
         agencia: colaborador.agencia || '',
         operacao: colaborador.operacao || '',
-        numeroConta: colaborador.numeroConta || ''
+        numeroConta: colaborador.numeroConta || '',
+        centroDeCustoId: colaborador.centroDeCustoId || ''
       });
     } else {
       setSelectedColaborador(null);
@@ -97,7 +110,8 @@ const ColaboradoresPage = () => {
         cpf: '',
         agencia: '',
         operacao: '',
-        numeroConta: ''
+        numeroConta: '',
+        centroDeCustoId: ''
       });
     }
     setOpen(true);
@@ -111,11 +125,22 @@ const ColaboradoresPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Limpa o CPF mantendo zeros à esquerda se necessário (CPF de 11 dígitos)
+      let cleanedCpf = String(formData.cpf || '').replace(/\D/g, '');
+      if (cleanedCpf.length > 0 && cleanedCpf.length < 11) {
+        cleanedCpf = cleanedCpf.padStart(11, '0');
+      }
+      const dataToSave = { 
+        ...formData, 
+        cpf: cleanedCpf,
+        centroDeCustoId: formData.centroDeCustoId ? Number(formData.centroDeCustoId) : null
+      };
+
       if (selectedColaborador) {
-        await updateColaborador(selectedColaborador.id, formData);
+        await updateColaborador(selectedColaborador.id, dataToSave);
         showSnackbar('Colaborador atualizado com sucesso');
       } else {
-        await createColaborador(formData);
+        await createColaborador(dataToSave);
         showSnackbar('Colaborador criado com sucesso');
       }
       handleClose();
@@ -213,24 +238,29 @@ const ColaboradoresPage = () => {
           // Pula notas ou avisos que começam com '*'
           if (String(row.nomeCompleto || '').trim().startsWith('*')) return;
 
-          const cpf = String(row.cpf || '').replace(/\D/g, '');
+          // Limpa o CPF mantendo zeros à esquerda se necessário (CPF de 11 dígitos)
+          let cpf = String(row.cpf || '').replace(/\D/g, '');
+          if (cpf.length > 0 && cpf.length < 11) {
+            cpf = cpf.padStart(11, '0');
+          }
 
           // Validações
-          if (!row.nomeCompleto || !row.cpf || !row.funcao) {
+          if (!row.nomeCompleto || !cpf || !row.funcao) {
             errors.push({ line: rowNum, name: row.nomeCompleto || 'Desconhecido', reason: 'Campos obrigatórios faltando' });
             return;
           }
 
           if (existingCpfs.includes(cpf)) {
-            errors.push({ line: rowNum, name: row.nomeCompleto, reason: `CPF ${row.cpf} já cadastrado no sistema` });
+            errors.push({ line: rowNum, name: row.nomeCompleto, reason: `CPF ${cpf} já cadastrado no sistema` });
             return;
           }
 
           if (seenCpfs.has(cpf)) {
-            errors.push({ line: rowNum, name: row.nomeCompleto, reason: `CPF ${row.cpf} duplicado na planilha` });
+            errors.push({ line: rowNum, name: row.nomeCompleto, reason: `CPF ${cpf} duplicado na planilha` });
             return;
           }
 
+          const rawCustoId = row.codigoCentroCusto !== undefined ? row.codigoCentroCusto : row.centroDeCustoId;
           seenCpfs.add(cpf);
           validData.push({
             nomeCompleto: row.nomeCompleto,
@@ -238,7 +268,8 @@ const ColaboradoresPage = () => {
             funcao: row.funcao,
             agencia: String(row.agencia || ''),
             operacao: String(row.operacao || ''),
-            numeroConta: String(row.numeroConta || '')
+            numeroConta: String(row.numeroConta || ''),
+            centroDeCustoId: rawCustoId && !isNaN(Number(rawCustoId)) ? Number(rawCustoId) : null
           });
         });
 
@@ -305,6 +336,7 @@ const ColaboradoresPage = () => {
               <TableCell sx={{ fontWeight: 600 }}>Nome Completo</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Função</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>CPF</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Centro de Custo</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>Dados Bancários (Ag/Op/Conta)</TableCell>
               <TableCell align="right" sx={{ fontWeight: 600 }}>Ações</TableCell>
             </TableRow>
@@ -315,6 +347,7 @@ const ColaboradoresPage = () => {
                 <TableCell sx={{ fontWeight: 500 }}>{colab.nomeCompleto}</TableCell>
                 <TableCell>{colab.funcao}</TableCell>
                 <TableCell>{colab.cpf}</TableCell>
+                <TableCell>{colab.centroDeCustoNome || 'Não Informado'}</TableCell>
                 <TableCell>
                   <Tooltip title="Agência / Operação / Conta">
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -385,6 +418,23 @@ const ColaboradoresPage = () => {
                     onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    select
+                    label="Centro de Custo"
+                    fullWidth
+                    value={formData.centroDeCustoId}
+                    onChange={(e) => setFormData({ ...formData, centroDeCustoId: e.target.value })}
+                    SelectProps={{ native: true }}
+                  >
+                    <option value="">Selecione um Centro de Custo</option>
+                    {centrosDeCusto.map((cc) => (
+                      <option key={cc.id} value={cc.id}>
+                        {cc.nome}
+                      </option>
+                    ))}
+                  </TextField>
+                </Grid>
               </Grid>
 
               <Divider sx={{ my: 3 }} />
@@ -452,15 +502,16 @@ const ColaboradoresPage = () => {
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>Instruções</Typography>
               </Box>
               <Typography variant="body2" paragraph>
-                Para realizar a importação, utilize um arquivo Excel (.xlsx) ou CSV com as seguintes colunas obrigatórias:
+                Para realizar a importação, utilize um arquivo Excel (.xlsx) ou CSV com as seguintes colunas:
               </Typography>
               <Box component="ul" sx={{ pl: 2, mb: 3 }}>
-                <li><Typography variant="body2"><strong>nomeCompleto</strong>: Nome completo do colaborador</Typography></li>
-                <li><Typography variant="body2"><strong>cpf</strong>: CPF (apenas números)</Typography></li>
-                <li><Typography variant="body2"><strong>funcao</strong>: Cargo ou função</Typography></li>
-                <li><Typography variant="body2"><strong>agencia</strong>: Agência bancária</Typography></li>
-                <li><Typography variant="body2"><strong>operacao</strong>: Operação da conta</Typography></li>
-                <li><Typography variant="body2"><strong>numeroConta</strong>: Número da conta</Typography></li>
+                <li><Typography variant="body2"><strong>nomeCompleto</strong> (obrigatório): Nome completo do colaborador</Typography></li>
+                <li><Typography variant="body2"><strong>cpf</strong> (obrigatório): CPF (apenas números)</Typography></li>
+                <li><Typography variant="body2"><strong>funcao</strong> (obrigatório): Cargo ou função</Typography></li>
+                <li><Typography variant="body2"><strong>codigoCentroCusto</strong> (opcional): Código/ID do Centro de Custo</Typography></li>
+                <li><Typography variant="body2"><strong>agencia</strong> (obrigatório): Agência bancária</Typography></li>
+                <li><Typography variant="body2"><strong>operacao</strong> (obrigatório): Operação da conta</Typography></li>
+                <li><Typography variant="body2"><strong>numeroConta</strong> (obrigatório): Número da conta</Typography></li>
               </Box>
               <Button 
                 variant="outlined" 

@@ -1,7 +1,9 @@
 package com.acengenhariase.tech.gestaoproducao.service;
 
 import com.acengenhariase.tech.gestaoproducao.dto.ColaboradorDTO;
+import com.acengenhariase.tech.gestaoproducao.model.CentroDeCusto;
 import com.acengenhariase.tech.gestaoproducao.model.Colaborador;
+import com.acengenhariase.tech.gestaoproducao.repository.CentroDeCustoRepository;
 import com.acengenhariase.tech.gestaoproducao.repository.ColaboradorRepository;
 import com.acengenhariase.tech.gestaoproducao.repository.ProducaoRepository;
 
@@ -21,6 +23,9 @@ public class ColaboradorService {
 
     @Autowired
     private ProducaoRepository producaoRepository;
+
+    @Autowired
+    private CentroDeCustoRepository centroDeCustoRepository;
 
     @Transactional(readOnly = true)
     public List<ColaboradorDTO> listarTodos() {
@@ -75,12 +80,21 @@ public class ColaboradorService {
     private ColaboradorDTO toDTO(Colaborador colaborador) {
         ColaboradorDTO dto = new ColaboradorDTO();
         BeanUtils.copyProperties(colaborador, dto);
+        if (colaborador.getCentroDeCusto() != null) {
+            dto.setCentroDeCustoId(colaborador.getCentroDeCusto().getId());
+            dto.setCentroDeCustoNome(colaborador.getCentroDeCusto().getNome());
+        }
         return dto;
     }
 
     private Colaborador fromDTO(ColaboradorDTO dto) {
         Colaborador colaborador = new Colaborador();
         BeanUtils.copyProperties(dto, colaborador);
+        if (dto.getCentroDeCustoId() != null) {
+            CentroDeCusto cc = centroDeCustoRepository.findById(dto.getCentroDeCustoId())
+                    .orElseThrow(() -> new RuntimeException("Centro de Custo não encontrado com o ID: " + dto.getCentroDeCustoId()));
+            colaborador.setCentroDeCusto(cc);
+        }
         return colaborador;
     }
 }
